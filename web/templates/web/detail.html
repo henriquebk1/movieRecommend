@@ -4,23 +4,18 @@
 {% block body %}
 
 
-<div class="container-fluid col-sm-offset-1">
+<div class="container-fluid" style="min-height: 83vh;">
 
     <div class="row">
 
         <!-- Left Movie Info -->
         <div class="col-sm-2 col-md-3">
-            <div class="panel panel-default">
-                <div class="panel-body">
                     <a href="#">                            
-                        <img src="https://image.tmdb.org/t/p/w500{{ movies.poster_path}}" class="img-responsive">
+                        <img src="https://image.tmdb.org/t/p/w500{{ movies.poster_path}}" class="img-responsive" style="width: 100%;">
                     </a>
-                    <h2></h2>
-                </div>
-            </div>
         </div>
         <!-- Right Movie Info -->
-        <div class="col-sm-offset-1 col-sm-4 col-md-4">
+        <div class="col-sm-4 col-md-4">
             <h1>{{movies.title}}</h1>
             <h3><small>{{movies.overview}}</small></h3>
         	<h1><small>Have you watch ?</small></h1>

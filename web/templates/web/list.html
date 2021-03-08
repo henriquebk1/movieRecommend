@@ -1,23 +1,6 @@
 {% extends 'web/base.html'%}
 {% block body %}
 
-<div class="container">
-    <div class="col-xs-6 col-xs-offset-3">
-    	<form class="form-horizontal" role="search" method="get" action=''>
-         <div class="form-group">
-         <div class="input-group">	
-            <input type="text" class="form-control input-lg " name="q" value="{{ request.GET.q }}" placeholder= "Search Movies "/>
-            <span class='input-group-btn'>
-
-             <button class='btn btn-info btn-lg' type='submit'>Search
-             </button>
-         </span>
-        </div>
-     </div>
-   </form>
-
- </div>
-</div>  
     {% if messages %}
             <ul class="messages">
             {% for message in messages %}
@@ -31,19 +14,15 @@
     <div class="row">
             {% if movies %}
             {% for movie in movies %}
-                <div class="col-sm-2 col-md-2 ">
-                    <div class="thumbnail">
-                        <h4>{{movie.title}}</h4>
+                <div class="col-sm-2 col-md-2 " style="margin-bottom:1rem">
+                    <div class="card" style="height:100%">
                         <a href="{% url 'detail' movie.id %}">
-                            <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path}}" class="img-responsive">
+                            <img class="card-img-top" src="https://image.tmdb.org/t/p/w500{{ movie.poster_path}}">
                         </a>
-                        <h5>{{movie.genre}}</h5>
-                        <div class="caption">
-
-                            <!-- View Details -->
-                            <a href="{% url 'detail' movie.id %}" class="btn btn-primary btn-sm" role="button">Give Rating</a>
-
-                                        
+                        <div class="card-body">
+                            <h5 class="card-title">{{movie.title}}</h5>
+                            <p class="card-text text-truncate">{{movie.overview}}</p>
+                            <a href="{% url 'detail' movie.id %}" class="btn btn-primary">Give Rating</a>
                         </div>
                     </div>
                 </div>

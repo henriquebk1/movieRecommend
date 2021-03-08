@@ -9,22 +9,18 @@
   <!-- Movie list -->
   <div class="row">
     {% if movie_list %} {% for movie in movie_list %}
-    <div class="col-sm-2 col-md-2">
-      <div class="thumbnail">
-        <h4>{{movie.title}}</h4>
+    <div class="col-sm-2 col-md-2" style="margin-bottom: 1rem">
+      <div class="card" style="height: 100%">
         <a href="{% url 'detail' movie.id %}">
           <img
+            class="card-img-top"
             src="https://image.tmdb.org/t/p/w500{{ movie.poster_path}}"
-            class="img-responsive"
           />
         </a>
-        <h5>{{movie.genre}}</h5>
-        <div class="caption">
-          <!-- View Details -->
-          <a
-            href="{% url 'detail' movie.id %}"
-            class="btn btn-primary btn-sm"
-            role="button"
+        <div class="card-body">
+          <h5 class="card-title">{{movie.title}}</h5>
+          <p class="card-text text-truncate">{{movie.overview}}</p>
+          <a href="{% url 'detail' movie.id %}" class="btn btn-primary"
             >Give Rating</a
           >
         </div>

@@ -1,9 +1,14 @@
 {% for field in form %}
-    <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-12">
-            <span class="text-danger small">{{ field.errors }}</span>
-        </div>
-        <label class="control-label col-sm-2" for="movie_title">{{ field.label_tag }}</label>
-        <div class="col-sm-10">{{ field }}</div>
-    </div>
+<div class="form-group">
+  <span class="text-danger small">{{ field.errors }}</span>
+  <label for="{{ field.auto_id }}">{{ field.label_tag }}</label>
+  <input
+    type="{{field.field.widget.input_type}}"
+    class="form-control"
+    {%if field.field.required%}required{%endif%}
+    name="{{ field.name }}"
+    placeholder="{{ field.label }}"
+    id="{{ field.auto_id }}"
+  />
+</div>
 {% endfor %}
