@@ -11,6 +11,13 @@
 	<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css' >
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,700' rel='stylesheet' type='text/css'>
     <link rel='stylesheet' href='{% static "web/css/base.css" %}' />
+    
+
+	<script type="text/javascript" src="{%static 'web/js/jquery.min.js'%}">
+	</script>
+
+	<script type="text/javascript" src="{%static 'web/js/bootstrap.min.js'%}">
+	</script>
 
     <style type="text/css">
         .thumbnail p, .thumbnail h4 {
@@ -42,9 +49,9 @@
                     Recommendations
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="{% url 'recommend' %}">&nbsp; Recommendations</a>
+                <a class="dropdown-item" href="{% url 'recommend' %}">&nbsp; Collaborative</a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="{% url 'recommend' %}">&nbsp; Recommendations</a>
+                <a class="dropdown-item" href="{% url 'genres' %}">&nbsp; By genre</a>
                 </div>
                 {% endif %}
             </li>
@@ -68,6 +75,13 @@
                                 </a>
                             </li>
                         {% else %}
+                            <li class="navbar-text">
+                                {% if request.user.first_name %}
+                                    {{request.user.first_name}}{{' '}}{{request.user.last_name}}
+                                {% else %}
+                                    {{request.user.username}}
+                                {% endif %}
+                            </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{% url 'logout' %}">
                                     Logout <i class="fa fa-sign-out" aria-hidden="true"></i>
@@ -86,11 +100,27 @@
         <p class="footer-copyright text-center py-3">© 2021
         </p>
     </footer>
-	<script type="text/javascript" src="{%static 'web/js/jquery.min.js'%}">
-	</script>
 
-	<script type="text/javascript" src="{%static 'web/js/bootstrap.min.js'%}">
-	</script>
+
+
+{% if messages %}
+
+            <!-- Then put toasts within -->
+            {% for message in messages %}
+            <div class="toast" role="alert" style="position: absolute; top: 4rem; right: 24px;" data-autohide="false">
+                <div class="toast-header">
+                    <strong class="mr-auto">Movies</strong>
+                    <small class="text-muted">just now</small>
+                    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="toast-body">
+                    {{ message }}
+                </div>
+            {% endfor %}
+            </div>
+    {% endif %}
     <script type="text/javascript">
     var $star_rating = $('.star-rating .fa');
 
@@ -124,6 +154,12 @@
     }
     }
 </script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $(".toast").toast('show');
+        });
+    </script>
 
 </body>
 </html>

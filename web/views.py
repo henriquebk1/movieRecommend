@@ -9,6 +9,7 @@ from .forms import UserForm
 from django.db.models import Case, When
 from .recommendation import Myrecommend
 from .generalRecommendation import GeneralRecommend
+from .recommendationByGenre import MyrecommendGenre
 import numpy as np 
 import pandas as pd
 
@@ -19,25 +20,22 @@ def recommend(request):
 		return redirect("login")
 	if not request.user.is_active:
 		raise Http404
-	df=pd.DataFrame(list(MovieRating.objects.all().values()))
-	nu=df.user_id.unique().shape[0]
-	current_user_id= request.user.id
-	# if new user not rated any movie
-	if current_user_id>nu:
-		movie=Movie.objects.get(id=15)
-		q=MovieRating(user=request.user,movie=movie,rating=0)
-		q.save()
 
-	print("Current user id: ",current_user_id)
-	prediction_matrix,Ymean = Myrecommend()
-	my_predictions = prediction_matrix[:,current_user_id-1]+Ymean.flatten()
-	pred_idxs_sorted = np.argsort(my_predictions)
-	pred_idxs_sorted[:] = pred_idxs_sorted[::-1]
-	pred_idxs_sorted=pred_idxs_sorted+1
-	print(pred_idxs_sorted)
+	print("Current user id: ",request.user.id)
+	pred_idxs_sorted = Myrecommend(request.user.id)
 	preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(pred_idxs_sorted)])
-	movie_list=list(Movie.objects.filter(id__in = pred_idxs_sorted,).order_by(preserved)[:50])
+	movie_list=list(Movie.objects.filter(id__in = pred_idxs_sorted).order_by(preserved)[:50])
 	return render(request,'web/recommend.html',{'movie_list':movie_list})
+
+	# for recommendation by genre
+def genres(request):
+	if not request.user.is_authenticated:
+		return redirect("login")
+	if not request.user.is_active:
+		raise Http404
+
+	print("Current user id: ",request.user.id)
+	return render(request,'web/recommend.html',{'movie_list':MyrecommendGenre(request.user.id)})
 
 
 # List view
@@ -53,17 +51,26 @@ def detail(request,movie_id):
 	if not request.user.is_active:
 		raise Http404
 	movies = get_object_or_404(Movie,id=movie_id)
+	userRating = MovieRating.objects.filter(user__id = request.user.id, movie__id = movie_id).first()
+	currentRating = (0 if userRating is None else userRating.rating)
 	#for rating
 	if request.method == "POST":
 		rate = request.POST['rating']
-		ratingObject = MovieRating()
+		ratingObject = MovieRating() if userRating is None else userRating
 		ratingObject.user   = request.user
 		ratingObject.movie  = movies
 		ratingObject.rating = rate
 		ratingObject.save()
+		movie = Movie.objects.filter(id = movie_id).first()
+		if  userRating is None:
+			movie.vote_average = (movie.vote_average * movie.vote_count + float(rate))/(movie.vote_count + 1)
+			movie.vote_count += 1
+		else:
+			movie.vote_average = (movie.vote_average * movie.vote_count + float(rate) - currentRating)/(movie.vote_count)
+		movie.save()
 		messages.success(request,"Your Rating is submited ")
-		return redirect("index")
-	return render(request,'web/detail.html',{'movies':movies})
+		return render(request,'web/detail.html',{'movies':movies, 'rating': rate })
+	return render(request,'web/detail.html',{'movies':movies, 'rating': currentRating })
 
 
 # Register user

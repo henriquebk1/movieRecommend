@@ -26,7 +26,13 @@
         </div>
       </div>
     </div>
-    {% endfor %} {% endif %}
+    {% endfor %} 
+    {% else %}
+      <p style="font-weight: bold;
+    text-align: center;
+    flex: 1;
+    height: 75vh;">Rate some movies first</p>
+    {% endif %}
   </div>
 </div>
 

@@ -1,13 +1,5 @@
 {% extends 'web/base.html'%}
 {% block body %}
-
-    {% if messages %}
-            <ul class="messages">
-            {% for message in messages %}
-                <li{% if message.tags %} class="{{ message.tags }}"{% endif %} >{{ message }}</li>
-            {% endfor %}
-            </ul>
-    {% endif %}
 	<div class="container-fluid">
     
     <!-- Movie list -->

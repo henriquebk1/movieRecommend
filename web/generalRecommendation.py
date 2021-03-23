@@ -21,8 +21,7 @@ def GeneralRecommend(query):
   
 	q_movies['score'] = q_movies.apply(weighted_rating, axis=1)
 	q_movies = q_movies.sort_values('score', ascending=False)
-	q_moveis = q_movies.head(100)
-	print(q_movies)
+	q_movies = q_movies.head(100)
 	
 	movies = [Movie(
 			id=record['id'],
@@ -33,7 +32,7 @@ def GeneralRecommend(query):
 			overview=record['overview'],
 			vote_average=record['vote_average'],
 			vote_count=record['vote_count'],
-	) for record in q_moveis.to_dict('records')]
+	) for record in q_movies.to_dict('records')]
 	
 	return movies
 	
