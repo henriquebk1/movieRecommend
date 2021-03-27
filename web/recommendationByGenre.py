@@ -19,24 +19,6 @@ def MyrecommendGenre(userid):
 	for movie in movie_list:
 		genres.add(movie.genres)
 
-
-	if len(genres) < 2:	
-		df=pd.DataFrame(list(Movie.objects.all().values()))
-		C = df.vote_average.mean()
-		m = df.vote_count.quantile(0.90)
-		q_movies = df.copy().loc[df.vote_count >= m]
-		q_movies.shape
-		def weighted_rating(x, m=m, C=C):
-			v = x['vote_count']
-			R = x['vote_average']
-			return (v/(v+m) * R) + (m/(m+v) * C)
-		
-		q_movies['score'] = q_movies.apply(weighted_rating, axis=1)
-		q_movies = q_movies.sort_values('score', ascending=False)
-		q_movies = q_movies.head(10)
-		for g in [record['genres'] for record in q_movies.to_dict('records')]:
-			genres.add(g)
-
 	df=pd.DataFrame(list(Movie.objects.filter(genres__in = genres).exclude(id__in = ratings['movie_id']).values()))
 	C = df.vote_average.mean()
 	m = df.vote_count.quantile(0.90)
